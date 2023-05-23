@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+
+# CPU Inference
+  llama-cpp-server-cpu:
+    image: localagi/llama-cpp:main
+    command: ["--model", "${LOCAL_MODEL_DIR}/Wizard-Vicuna-13B-Uncensored-GGML/Wizard-Vicuna-13B-Uncensored.ggml.q5_1.bin" ]
+    init: true
+    tty: true
+    volumes:
+      - $LOCAL_MODEL_DIR:/models
+              
+# GPU Inference        
+  llama-cpp-server-gpu:
+    image: localagi/llama-cpp:main-cublas-${CUDA_VERSION}
+    command: ["--model", "${LOCAL_MODEL_DIR}/Wizard-Vicuna-13B-Uncensored-GGML/Wizard-Vicuna-13B-Uncensored.ggml.q5_1.bin" ]
+    init: true
+    tty: true
+    volumes:
+      - $LOCAL_MODEL_DIR:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
